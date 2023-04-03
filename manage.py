@@ -1,10 +1,8 @@
 """Project's command-line utility module."""
 from flask import Flask
-from flask_restful import Api
+
+from app.health import HEALTH_BLUEPRINT
 
 app = Flask(__name__)
-api = Api(app)
 
-
-if __name__ == "__main__":
-    app.run()
+app.register_blueprint(HEALTH_BLUEPRINT)
