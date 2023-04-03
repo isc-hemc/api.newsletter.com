@@ -1,6 +1,39 @@
 version: "3.8"
 
 services:
+  api:
+    build: .
+    container_name: newsletter_api
+    environment:
+      - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
+      - FLASK_APP=manage.py
+      - FLASK_DEBUG=True
+      - PIPENV_IGNORE_VIRTUALENVS=1
+    healthcheck:
+      interval: 20s
+      retries: 3
+      start_period: 10s
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://0.0.0.0:8000/v1/health"
+        ]
+      timeout: 5s
+    networks:
+      newsletter_net:
+        aliases:
+          - newsletter_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/:/opt/api/app/
+      - ./utils/:/opt/api/utils/
+      - ./manage.py:/opt/api/manage.py
+      - ./Pipfile:/opt/api/Pipfile
+      - ./Pipfile.lock:/opt/api/Pipfile.lock
+
   db:
     container_name: newsletter_db
     environment:
