@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 from utils import db
 
 
-class ContactModel(db.Model):
+class ContactsModel(db.Model):
     """Extend from `db.Model` and define the fields for a Contact registry.
 
     Attributes
@@ -43,4 +43,4 @@ class ContactModel(db.Model):
     __tablename__ = "contacts"
 
 
-__all__ = ["ContactModel"]
+__all__ = ["ContactsModel"]
