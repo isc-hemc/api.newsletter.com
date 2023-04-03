@@ -60,7 +60,7 @@ class ContactListResource(Resource):
 
         serialized_data = self.schema.dump(data)
 
-        return {"data": serialized_data}, 200
+        return {"results": serialized_data}, 200
 
 
 __all__ = ["ContactResource", "ContactListResource"]

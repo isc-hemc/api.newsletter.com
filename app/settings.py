@@ -2,12 +2,16 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 
 from app.contact import CONTACT_BLUEPRINT
 from app.health import HEALTH_BLUEPRINT
 from utils import db, ma, migrate
 
 app = Flask(__name__)
+
+# Enable CORS support on all routes.
+CORS(app)
 
 # Database settings.
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "")
