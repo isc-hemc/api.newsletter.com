@@ -1,0 +1,1 @@
+"""Flask settings module."""
