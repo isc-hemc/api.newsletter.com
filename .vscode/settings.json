@@ -23,7 +23,7 @@
         "79"
     ],
     "python.linting.pycodestyleArgs": [
-        "--ignore=E501,W503"
+        "--ignore=E501,W503,E722"
     ],
     "python.linting.pydocstyleEnabled": true,
     "python.linting.flake8Enabled": true,

@@ -11,6 +11,8 @@ flask-sqlalchemy = "==3.0.3"
 sqlalchemy = "==2.0.8"
 psycopg2 = "==2.9.5"
 flask-migrate = "==4.0.4"
+flask-marshmallow = "==0.14.0"
+marshmallow-sqlalchemy = "==0.29.0"
 
 [dev-packages]
 pycodestyle = "==2.10.0"

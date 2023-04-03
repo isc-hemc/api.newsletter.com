@@ -1,5 +1,6 @@
 """Contacts models module."""
 import uuid
+from typing import List
 
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
@@ -8,7 +9,7 @@ from sqlalchemy.sql import func
 from utils import db
 
 
-class ContactsModel(db.Model):
+class ContactModel(db.Model):
     """Extend from `db.Model` and define the fields for a Contact registry.
 
     Attributes
@@ -42,5 +43,15 @@ class ContactsModel(db.Model):
 
     __tablename__ = "contacts"
 
+    @classmethod
+    def find_all(self) -> List["ContactModel"]:
+        """Query all resources."""
+        return self.query.all()
 
-__all__ = ["ContactsModel"]
+    def save(self):
+        """Create a new contact registry."""
+        db.session.add(self)
+        db.session.commit()
+
+
+__all__ = ["ContactModel"]
