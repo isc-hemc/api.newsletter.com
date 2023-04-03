@@ -29,3 +29,6 @@ class HealthResource(Resource):
             status=200,
             headers={"Content-Type": "application/json"},
         )
+
+
+__all__ = ["HealthResource"]

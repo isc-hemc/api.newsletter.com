@@ -4,18 +4,21 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask-restful = "*"
-flask = "*"
-python-dotenv = "*"
+flask-restful = "==0.3.9"
+flask = "==2.2.3"
+python-dotenv = "==1.0.0"
+flask-sqlalchemy = "==3.0.3"
+sqlalchemy = "==2.0.8"
+psycopg2 = "==2.9.5"
+flask-migrate = "==4.0.4"
 
 [dev-packages]
-pycodestyle = "*"
-pylint = "*"
-mypy = "*"
-pyflakes = "*"
-pydocstyle = "*"
-flake8 = "*"
-pre-commit = "*"
+pycodestyle = "==2.10.0"
+pylint = "==2.17.1"
+pyflakes = "==3.0.1"
+pydocstyle = "==6.3.0"
+flake8 = "==6.0.0"
+pre-commit = "==3.2.1"
 black = "==22.3.0"
 
 [requires]
@@ -23,3 +26,6 @@ python_version = "3.10"
 
 [scripts]
 dev = "flask run"
+db_init = "flask db init"
+makemigrations = "flask db migrate"
+migrate = "flask db upgrade"

@@ -26,7 +26,6 @@
         "--ignore=E501,W503"
     ],
     "python.linting.pydocstyleEnabled": true,
-    "python.linting.mypyEnabled": true,
     "python.linting.flake8Enabled": true,
     "python.linting.pycodestyleEnabled": true,
     "python.linting.pylintEnabled": true,

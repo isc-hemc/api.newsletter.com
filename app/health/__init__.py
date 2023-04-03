@@ -1,2 +1,3 @@
 """Health package initializer."""
-from .urls import HEALTH_BLUEPRINT
+from .resources import *
+from .urls import *
