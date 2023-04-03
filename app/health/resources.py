@@ -1,7 +1,6 @@
 """Health resources module."""
 import json
 
-from flask import Response
 from flask_restful import Resource
 
 
@@ -15,20 +14,9 @@ class HealthResource(Resource):
 
     """
 
-    def get(self) -> Response:
-        """Retrieve an HTTP 200 status code with a health message.
-
-        Returns
-        -------
-        Response
-            HTTP success `Response` if the server is up and running.
-
-        """
-        return Response(
-            json.dumps({"status": "Ok!"}),
-            status=200,
-            headers={"Content-Type": "application/json"},
-        )
+    def get(self):
+        """Retrieve an HTTP 200 status code with a health message."""
+        return {"status": "Ok!"}, 200
 
 
 __all__ = ["HealthResource"]

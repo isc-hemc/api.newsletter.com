@@ -1,4 +1,4 @@
-"""Contacts package initializer."""
+"""Contact package initializer."""
 from .models import *
 from .resources import *
 from .schemas import *

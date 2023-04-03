@@ -3,7 +3,7 @@ import os
 
 from flask import Flask
 
-from app.contacts import CONTACTS_BLUEPRINT
+from app.contact import CONTACT_BLUEPRINT
 from app.health import HEALTH_BLUEPRINT
 from utils import db, ma, migrate
 
@@ -24,6 +24,6 @@ migrate.init_app(app, db)
 
 # Register blueprints.
 app.register_blueprint(HEALTH_BLUEPRINT)
-app.register_blueprint(CONTACTS_BLUEPRINT)
+app.register_blueprint(CONTACT_BLUEPRINT)
 
 __all__ = ["app"]

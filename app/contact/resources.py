@@ -1,4 +1,4 @@
-"""Contacts resources module."""
+"""Contact resources module."""
 from flask import request
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError

@@ -1,3 +1,3 @@
 """App package initializer."""
-from .contacts import *
+from .contact import *
 from .settings import *

@@ -1,4 +1,4 @@
-"""Contacts schemas module."""
+"""Contact schemas module."""
 from utils import ma
 
 from .models import ContactModel

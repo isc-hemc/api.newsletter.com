@@ -1,4 +1,4 @@
-"""Contacts models module."""
+"""Contact models module."""
 import uuid
 from typing import List
 
@@ -31,6 +31,8 @@ class ContactModel(db.Model):
 
     """
 
+    __tablename__ = "contacts"
+
     id = sa.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
     name = sa.Column(sa.String(32), nullable=False)
     last_name = sa.Column(sa.String(32), nullable=False)
@@ -41,15 +43,13 @@ class ContactModel(db.Model):
         sa.DateTime(timezone=True), default=func.now(), onupdate=func.now()
     )
 
-    __tablename__ = "contacts"
-
     @classmethod
     def find_all(self) -> List["ContactModel"]:
         """Query all resources."""
         return self.query.all()
 
     def save(self):
-        """Create a new contact registry."""
+        """Create a new resource."""
         db.session.add(self)
         db.session.commit()
 
