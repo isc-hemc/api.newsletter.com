@@ -1,6 +1,6 @@
 """Contact models module."""
 import uuid
-from typing import List
+from typing import List, Optional
 
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
@@ -47,6 +47,11 @@ class ContactModel(db.Model):
     def find_all(self) -> List["ContactModel"]:
         """Query all resources."""
         return self.query.all()
+
+    @classmethod
+    def find_by_email(self, _email: str) -> Optional["ContactModel"]:
+        """Query a single user by the given email."""
+        return self.query.filter_by(email=_email).first()
 
     def save(self):
         """Create a new resource."""

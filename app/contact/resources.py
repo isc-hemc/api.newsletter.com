@@ -33,6 +33,13 @@ class ContactResource(Resource):
         except ValidationError as e:
             return e.messages, 400
 
+        contact = ContactModel.find_by_email(serialized_data["email"])
+
+        if contact is not None:
+            return {
+                "message": f"A registry with the email '{data['email']}' already exists."
+            }, 403
+
         try:
             contact = ContactModel(**serialized_data)
             contact.save()
