@@ -2,3 +2,4 @@
 from .db import *
 from .ma import *
 from .migrate import *
+from .models import *
