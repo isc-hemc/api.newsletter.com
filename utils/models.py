@@ -1,7 +1,7 @@
 """Utility models module."""
 import uuid
 
-from sqlalchemy import Boolean, Column, DateTime
+from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 

@@ -13,6 +13,8 @@ class Template(db.Model, BaseModel):
         Template name, this field is required and unique.
     content : Column
         Template content, it can be HTML code, default is an empty-string.
+    newsletters : relationship
+        Association between template and newsletter.
 
     """
 
@@ -20,6 +22,8 @@ class Template(db.Model, BaseModel):
 
     name = Column(String(128), nullable=False, unique=True)
     content = Column(Text, default="", nullable=True)
+
+    newsletters = db.relationship("Newsletter", backref="template", lazy=True)
 
 
 __all__ = ["Template"]
