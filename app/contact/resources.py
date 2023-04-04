@@ -48,7 +48,7 @@ class ContactResource(Resource):
             for sub in subscriptions:
                 contact.contacts_subscriptions.append(sub)
             contact.save()
-        except Exception as e:
+        except:
             return {"message": "An error occurred while saving the data."}, 409
 
         return self.schema.dump(contact), 201

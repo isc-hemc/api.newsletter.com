@@ -13,8 +13,6 @@ class BaseModel:
     ----------
     id : Column
         Registry unique identifier.
-    is_active : Column
-        True if the registry is active, otherwise False.
     created_at : Column
         Date when the registry was created.
     updated_at : Column
@@ -23,7 +21,6 @@ class BaseModel:
     """
 
     id = Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
-    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(
         DateTime(timezone=True), default=func.now(), onupdate=func.now()

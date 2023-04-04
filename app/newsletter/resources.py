@@ -1,14 +1,23 @@
 """Newsletter resources module."""
-from smtplib import SMTPAuthenticationError
-
+from flask import request
 from flask_mail import Message
 from flask_restful import Resource
+from marshmallow.exceptions import ValidationError
 
+from app import Contact
 from utils import mail
+
+from .models import Newsletter
+from .schemas import NewsletterSchema
 
 
 class NewsletterResource(Resource):
     """Manage newsletter operations.
+
+    Attributes
+    ----------
+    schema : NewsletterSchema
+        Newsletter serialization schema object.
 
     Methods
     -------
@@ -17,20 +26,35 @@ class NewsletterResource(Resource):
 
     """
 
+    schema = NewsletterSchema()
+
     def post(self):
         """Create a newsletter registry and send it to a recipients list."""
-        msg = Message("Testing mail service!", recipients=[""])
+        data = request.get_json()
+
+        try:
+            serialized_data = self.schema.load(data)
+        except ValidationError as e:
+            return e.messages, 400
+
+        contacts = Contact.find_all()
+
+        msg = Message(
+            serialized_data["subject"], recipients=[x.email for x in contacts]
+        )
 
         try:
             mail.send(msg)
-        except ConnectionRefusedError:
+        except:
             return {"message": "Mail server: connection refused."}, 502
-        except SMTPAuthenticationError as e:
-            return {
-                "message": "Mail server: invalid username or password."
-            }, 401
 
-        return {"message": "Email sended!"}, 202
+        try:
+            newsletter = Newsletter(**serialized_data)
+            newsletter.save()
+        except:
+            return {"message": "An error occurred while saving the data."}, 409
+
+        return self.schema.dump(newsletter), 201
 
 
 __all__ = ["NewsletterResource"]
