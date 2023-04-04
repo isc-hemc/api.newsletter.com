@@ -1,4 +1,4 @@
-"""Marshmallow serialization/deserialization object declaration."""
+"""Marshmallow serialization/deserialization declaration module."""
 from flask_marshmallow import Marshmallow
 
 ma = Marshmallow()
