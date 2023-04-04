@@ -1,7 +1,7 @@
 """Utility models module."""
 import uuid
 
-import sqlalchemy as sa
+from sqlalchemy import Boolean, Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 
@@ -11,22 +11,22 @@ class BaseModel:
 
     Attributes
     ----------
-    id : sa.Column
+    id : Column
         Registry unique identifier.
-    is_active : sa.Column
+    is_active : Column
         True if the registry is active, otherwise False.
-    created_at : sa.Column
+    created_at : Column
         Date when the registry was created.
-    updated_at : sa.Column
+    updated_at : Column
         Date when the registry was updated.
 
     """
 
-    id = sa.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
-    is_active = sa.Column(sa.Boolean, default=True)
-    created_at = sa.Column(sa.DateTime(timezone=True), default=func.now())
-    updated_at = sa.Column(
-        sa.DateTime(timezone=True), default=func.now(), onupdate=func.now()
+    id = Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), default=func.now())
+    updated_at = Column(
+        DateTime(timezone=True), default=func.now(), onupdate=func.now()
     )
 
 

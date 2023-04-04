@@ -1,9 +1,36 @@
 """Contact models module."""
 from typing import List, Optional
 
-import sqlalchemy as sa
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import func
 
+from app.subscription import Subscription
 from utils import BaseModel, db
+
+CONTACTS_SUBSCRIPTIONS = db.Table(
+    "contacts_subscriptions",
+    Column(
+        "contact_id",
+        UUID(as_uuid=True),
+        ForeignKey("contacts.id"),
+        primary_key=True,
+    ),
+    Column(
+        "subscription_id",
+        UUID(as_uuid=True),
+        ForeignKey("subscriptions.id"),
+        primary_key=True,
+    ),
+    Column("is_subscribed", Boolean, default=True, nullable=False),
+    Column("created_at", DateTime(timezone=True), default=func.now()),
+    Column(
+        "updated_at",
+        DateTime(timezone=True),
+        default=func.now(),
+        onupdate=func.now(),
+    ),
+)
 
 
 class Contact(db.Model, BaseModel):
@@ -11,20 +38,27 @@ class Contact(db.Model, BaseModel):
 
     Attributes
     ----------
-    name : sa.Column
+    name : Column
         Contact name, this field is required.
-    last_name : sa.Column
+    last_name : Column
         Contact last name, this field is required.
-    email : sa.Column
+    email : Column
         Contact email, this field is unique and required.
 
     """
 
     __tablename__ = "contacts"
 
-    name = sa.Column(sa.String(32), nullable=False)
-    last_name = sa.Column(sa.String(32), nullable=False)
-    email = sa.Column(sa.String(120), nullable=False, unique=True)
+    name = Column(String(32), nullable=False)
+    last_name = Column(String(32), nullable=False)
+    email = Column(String(120), nullable=False, unique=True)
+
+    contacts_subscriptions = db.relationship(
+        "Subscription",
+        secondary=CONTACTS_SUBSCRIPTIONS,
+        lazy="subquery",
+        backref=db.backref("contacts", lazy=True),
+    )
 
     @classmethod
     def find_all(self) -> List["Contact"]:

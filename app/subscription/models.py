@@ -1,5 +1,5 @@
 """Subscription models module."""
-import sqlalchemy as sa
+from sqlalchemy import Column, String, Text
 
 from utils import BaseModel, db
 
@@ -9,17 +9,17 @@ class Subscription(db.Model, BaseModel):
 
     Attributes
     ----------
-    name : sa.Column
+    name : Column
         Subscription name, this field is required and unique.
-    description : sa.Column
+    description : Column
         Subscription description, this field is optional.
 
     """
 
     __tablename__ = "subscriptions"
 
-    name = sa.Column(sa.String(128), nullable=False, unique=True)
-    description = sa.Column(sa.Text, default=None, nullable=True)
+    name = Column(String(128), nullable=False, unique=True)
+    description = Column(Text, default=None, nullable=True)
 
 
 __all__ = ["Subscription"]
