@@ -67,7 +67,7 @@ class Contact(db.Model, BaseModel):
 
     @classmethod
     def find_by_email(self, _email: str) -> Optional["Contact"]:
-        """Query a single user by the given email."""
+        """Query a single resource by the given email."""
         return self.query.filter_by(email=_email).first()
 
     def save(self):

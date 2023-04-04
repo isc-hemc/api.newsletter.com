@@ -4,7 +4,10 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
-from app import CONTACT_BLUEPRINT, HEALTH_BLUEPRINT, NEWSLETTER_BLUEPRINT
+from app.contact import CONTACT_BLUEPRINT
+from app.health import HEALTH_BLUEPRINT
+from app.newsletter import NEWSLETTER_BLUEPRINT
+from app.template import TEMPLATE_BLUEPRINT
 from utils import db, ma, mail, migrate
 
 app = Flask(__name__)
@@ -39,5 +42,6 @@ mail.init_app(app)
 app.register_blueprint(CONTACT_BLUEPRINT)
 app.register_blueprint(HEALTH_BLUEPRINT)
 app.register_blueprint(NEWSLETTER_BLUEPRINT)
+app.register_blueprint(TEMPLATE_BLUEPRINT)
 
 __all__ = ["app"]

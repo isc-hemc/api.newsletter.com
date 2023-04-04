@@ -15,12 +15,12 @@ class ContactResource(Resource):
     Attributes
     ----------
     schema : ContactSchema
-        Contact serialization schema object.
+        Serialization schema object.
 
     Methods
     -------
     post()
-        Create a new contact registry.
+        Create a new registry.
 
     """
 
@@ -39,7 +39,7 @@ class ContactResource(Resource):
 
         if contact is not None:
             return {
-                "message": f"A registry with the email '{data['email']}' already exists."
+                "message": f"A registry with the email '{contact.email}' already exists."
             }, 403
 
         try:
@@ -49,13 +49,20 @@ class ContactResource(Resource):
                 contact.contacts_subscriptions.append(sub)
             contact.save()
         except:
-            return {"message": "An error occurred while saving the data."}, 409
+            return {
+                "message": "An error occurred during CREATE operation."
+            }, 500
 
         return self.schema.dump(contact), 201
 
 
 class ContactListResource(Resource):
     """Manage a list of contacts.
+
+    Attributes
+    ----------
+    schema : ContactSchema
+        Serialization schema object.
 
     Methods
     -------
