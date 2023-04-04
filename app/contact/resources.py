@@ -3,7 +3,7 @@ from flask import request
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 
-from .models import ContactModel
+from .models import Contact
 from .schemas import ContactSchema
 
 
@@ -33,7 +33,7 @@ class ContactResource(Resource):
         except ValidationError as e:
             return e.messages, 400
 
-        contact = ContactModel.find_by_email(serialized_data["email"])
+        contact = Contact.find_by_email(serialized_data["email"])
 
         if contact is not None:
             return {
@@ -41,7 +41,7 @@ class ContactResource(Resource):
             }, 403
 
         try:
-            contact = ContactModel(**serialized_data)
+            contact = Contact(**serialized_data)
             contact.save()
         except Exception as e:
             return {"message": "An error occurred while saving the data."}, 500
@@ -63,7 +63,7 @@ class ContactListResource(Resource):
 
     def get(self):
         """Retrieve a list of serialized contacts."""
-        data = ContactModel.find_all()
+        data = Contact.find_all()
 
         serialized_data = self.schema.dump(data)
 

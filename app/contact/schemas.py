@@ -1,16 +1,16 @@
 """Contact schemas module."""
 from utils import ma
 
-from .models import ContactModel
+from .models import Contact
 
 
 class ContactSchema(ma.SQLAlchemyAutoSchema):
-    """Transform a queryset of `ContactModel` into a native Python datatype."""
+    """Transform a queryset of `Contact` into a native Python datatype."""
 
     class Meta:
         """Inner Meta class."""
 
-        model = ContactModel
+        model = Contact
         dump_only = ("id", "created_at", "updated_at")
 
 

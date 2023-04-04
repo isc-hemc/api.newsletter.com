@@ -1,55 +1,38 @@
 """Contact models module."""
-import uuid
 from typing import List, Optional
 
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import func
 
-from utils import db
+from utils import BaseModel, db
 
 
-class ContactModel(db.Model):
-    """Extend from `db.Model` and define the fields for a Contact registry.
+class Contact(db.Model, BaseModel):
+    """Declaration of the Contact model.
 
     Attributes
     ----------
-    id : sa.Column
-        Registry unique identifier.
     name : sa.Column
         Contact name, this field is required.
     last_name : sa.Column
         Contact last name, this field is required.
     email : sa.Column
         Contact email, this field is unique and required.
-    is_active : sa.Column
-        True if the registry is active, otherwise False.
-    created_at : sa.Column
-        Date when the registry was created.
-    updated_at : sa.Column
-        Date when the registry was updated.
 
     """
 
     __tablename__ = "contacts"
 
-    id = sa.Column(UUID(as_uuid=True), default=uuid.uuid4, primary_key=True)
     name = sa.Column(sa.String(32), nullable=False)
     last_name = sa.Column(sa.String(32), nullable=False)
     email = sa.Column(sa.String(120), nullable=False, unique=True)
-    is_active = sa.Column(sa.Boolean, default=True)
-    created_at = sa.Column(sa.DateTime(timezone=True), default=func.now())
-    updated_at = sa.Column(
-        sa.DateTime(timezone=True), default=func.now(), onupdate=func.now()
-    )
 
     @classmethod
-    def find_all(self) -> List["ContactModel"]:
+    def find_all(self) -> List["Contact"]:
         """Query all resources."""
         return self.query.all()
 
     @classmethod
-    def find_by_email(self, _email: str) -> Optional["ContactModel"]:
+    def find_by_email(self, _email: str) -> Optional["Contact"]:
         """Query a single user by the given email."""
         return self.query.filter_by(email=_email).first()
 
@@ -59,4 +42,4 @@ class ContactModel(db.Model):
         db.session.commit()
 
 
-__all__ = ["ContactModel"]
+__all__ = ["Contact"]
