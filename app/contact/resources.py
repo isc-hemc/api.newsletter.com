@@ -3,6 +3,8 @@ from flask import request
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 
+from app.subscription import Subscription
+
 from .models import Contact
 from .schemas import ContactSchema
 
@@ -42,6 +44,9 @@ class ContactResource(Resource):
 
         try:
             contact = Contact(**serialized_data)
+            subscriptions = Subscription.find_all()
+            for sub in subscriptions:
+                contact.contacts_subscriptions.append(sub)
             contact.save()
         except Exception as e:
             return {"message": "An error occurred while saving the data."}, 500
