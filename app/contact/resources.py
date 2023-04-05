@@ -29,14 +29,12 @@ class ContactResource(Resource):
     def post(self):
         """Create a new contact registry."""
         data = request.get_json()
-
         try:
             serialized_data = self.schema.load(data)
         except ValidationError as e:
             return e.messages, 400
 
         contact = Contact.find_by_email(serialized_data["email"])
-
         if contact is not None:
             return {
                 "message": f"A registry with the email '{contact.email}' already exists."

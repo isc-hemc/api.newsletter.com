@@ -32,15 +32,18 @@ class NewsletterResource(Resource):
 
     def post(self):
         """Create a new registry."""
-        data = request.get_json()
-
+        data = request.form.to_dict()
         try:
             serialized_data = self.schema.load(data)
         except ValidationError as e:
             return e.messages, 400
 
+        attachment = None
+        if request.files.get("attachment") is not None:
+            attachment = request.files.get("attachment").read()
+
         try:
-            newsletter = Newsletter(**serialized_data)
+            newsletter = Newsletter(attachment=attachment, **serialized_data)
             newsletter.save()
         except:
             return {
@@ -74,7 +77,6 @@ class NewsletterSubmissionResource(Resource):
 
         try:
             mail_body = ""
-
             if newsletter.template_id is not None:
                 mail_body = Template.find_by_id(newsletter.template_id).content
 
@@ -83,6 +85,11 @@ class NewsletterSubmissionResource(Resource):
                 recipients=[x.email for x in Contact.find_all()],
                 html=mail_body,
             )
+
+            if newsletter.attachment is not None:
+                msg.attach(
+                    "attachment.png", "image/png", newsletter.attachment
+                )
 
             mail.send(msg)
         except:

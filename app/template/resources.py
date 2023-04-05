@@ -27,14 +27,12 @@ class TemplateResource(Resource):
     def post(self):
         """Create a new registry."""
         data = request.get_json()
-
         try:
             serialized_data = self.schema.load(data)
         except ValidationError as e:
             return e.messages, 400
 
         template = Template.find_by_name(serialized_data["name"])
-
         if template is not None:
             return {
                 "message": f"A registry with the name '{template.name}' already exists."

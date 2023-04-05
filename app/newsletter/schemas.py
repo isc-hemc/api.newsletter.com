@@ -12,6 +12,7 @@ class NewsletterSchema(ma.SQLAlchemyAutoSchema):
 
         model = Newsletter
         dump_only = ("id", "created_at", "updated_at")
+        exclude = ("attachment",)
         include_fk = True
 
 
