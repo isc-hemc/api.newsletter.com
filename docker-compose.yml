@@ -4,6 +4,8 @@ services:
   api:
     build: .
     container_name: newsletter_api
+    depends_on:
+        - db
     environment:
       - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
       - FLASK_APP=manage.py
@@ -21,6 +23,7 @@ services:
           "http://0.0.0.0:8000/v1/health"
         ]
       timeout: 5s
+    image: newsletter_api:1.0
     networks:
       newsletter_net:
         aliases:
