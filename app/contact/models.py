@@ -70,6 +70,11 @@ class Contact(db.Model, BaseModel):
         return self.query.all()
 
     @classmethod
+    def find_by_bulk_id(self, _id: str) -> Optional["Contact"]:
+        """Query a single resource by the given bulk ID."""
+        return self.query.filter_by(bulk_id=_id)
+
+    @classmethod
     def find_by_email(self, _email: str) -> Optional["Contact"]:
         """Query a single resource by the given email."""
         return self.query.filter_by(email=_email).first()

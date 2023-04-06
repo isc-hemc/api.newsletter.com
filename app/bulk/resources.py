@@ -7,6 +7,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from app.contact import Contact
+from utils import db
 
 from .models import Bulk
 from .schemas import BulkSchema
@@ -47,37 +48,43 @@ class BulkResource(Resource):
                 "message": f"A registry with the name '{bulk.name}' already exists."
             }, 403
 
-        reader = csv.reader(io.TextIOWrapper(file))
-        next(reader)
-
-        inserted, repeated, errors = 0, 0, 0
-
-        for name, last_name, email in reader:
-            contact = Contact.find_by_email(email)
-            if contact is not None:
-                repeated += 1
-                continue
-            try:
-                contact = Contact(name=name, last_name=last_name, email=email)
-                contact.save()
-                inserted += 1
-            except:
-                errors += 1
-
         try:
-            bulk = Bulk(
-                inserted=inserted,
-                repeated=repeated,
-                errors=errors,
-                **serialized_data,
-            )
+            bulk = Bulk(**serialized_data)
             bulk.save()
         except:
             return {
                 "message": "An error occurred during CREATE operation."
             }, 500
 
-        return self.schema.dump(bulk), 200
+        # TODO: move the following code to an async task.
+        # TODO: find a way to make a cleaner solution for this algorithm.
+
+        reader = csv.reader(io.TextIOWrapper(file))
+        next(reader)
+
+        for name, last_name, email in reader:
+            try:
+                contact = Contact(
+                    name=name,
+                    last_name=last_name,
+                    email=email,
+                    bulk_id=bulk.id,
+                )
+                contact.save()
+            except:
+                db.session.rollback()
+                setattr(bulk, "errors", bulk.errors + 1)
+                bulk.update()
+
+        try:
+            contacts = Contact.find_by_bulk_id(bulk.id)
+            setattr(bulk, "inserted", contacts.count())
+
+            bulk.update()
+        except Exception as e:
+            pass
+
+        return self.schema.dump(bulk), 202
 
 
 class BulkListResource(Resource):
