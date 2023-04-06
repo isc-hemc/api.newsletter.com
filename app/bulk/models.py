@@ -15,10 +15,8 @@ class Bulk(db.Model, BaseModel):
         Custom name for the bulk, this field is required and unique.
     inserted : Column
         Number of inserted rows, defualt is `0`.
-    repeated : Column
-        Number of repetead rows, defualt is `0`.
     errors : Column
-        Number of errors detected in data, defualt is `0`.
+        Number of errors detected in data, e.g. repeated data, defualt is `0`.
 
     """
 
@@ -26,7 +24,6 @@ class Bulk(db.Model, BaseModel):
 
     name = Column(String(64), nullable=False, unique=True)
     inserted = Column(Integer, default=0)
-    repeated = Column(Integer, default=0)
     errors = Column(Integer, default=0)
 
     contacts = db.relationship("Contact", backref="bulk", lazy=True)
@@ -44,6 +41,10 @@ class Bulk(db.Model, BaseModel):
     def save(self):
         """Create a new resource."""
         db.session.add(self)
+        db.session.commit()
+
+    def update(self):
+        """Update the current resource."""
         db.session.commit()
 
 
