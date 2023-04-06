@@ -12,6 +12,7 @@ class ContactSchema(ma.SQLAlchemyAutoSchema):
 
         model = Contact
         dump_only = ("id", "created_at", "updated_at")
+        include_fk = True
 
 
 __all__ = ["ContactSchema"]

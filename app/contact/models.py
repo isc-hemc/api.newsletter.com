@@ -44,6 +44,8 @@ class Contact(db.Model, BaseModel):
         Contact last name, this field is required.
     email : Column
         Contact email, this field is unique and required.
+    bulk_id : Column
+        Foreign key of a bulk registry, this field is optional.
 
     """
 
@@ -52,6 +54,8 @@ class Contact(db.Model, BaseModel):
     name = Column(String(32), nullable=False)
     last_name = Column(String(32), nullable=False)
     email = Column(String(120), nullable=False, unique=True)
+
+    bulk_id = Column(UUID(as_uuid=True), ForeignKey("bulks.id"), nullable=True)
 
     contacts_subscriptions = db.relationship(
         "Subscription",

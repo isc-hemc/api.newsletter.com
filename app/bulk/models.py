@@ -29,6 +29,8 @@ class Bulk(db.Model, BaseModel):
     repeated = Column(Integer, default=0)
     errors = Column(Integer, default=0)
 
+    contacts = db.relationship("Contact", backref="bulk", lazy=True)
+
     @classmethod
     def find_all(self) -> List["Bulk"]:
         """Query all resources."""
