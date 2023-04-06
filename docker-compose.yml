@@ -1,77 +1,93 @@
 version: "3.8"
 
 services:
-  api:
-    build: .
-    container_name: newsletter_api
-    depends_on:
-        - db
-    environment:
-      - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
-      - FLASK_APP=manage.py
-      - FLASK_DEBUG=True
-      - PIPENV_IGNORE_VIRTUALENVS=1
-    healthcheck:
-      interval: 20s
-      retries: 3
-      start_period: 10s
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://0.0.0.0:8000/v1/health"
-        ]
-      timeout: 5s
-    image: newsletter_api:1.0
-    networks:
-      newsletter_net:
-        aliases:
-          - newsletter_api
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./app/:/opt/api/app/
-      - ./utils/:/opt/api/utils/
-      - ./manage.py:/opt/api/manage.py
-      - ./Pipfile:/opt/api/Pipfile
-      - ./Pipfile.lock:/opt/api/Pipfile.lock
+    api:
+        build: .
+        container_name: newsletter_api
+        depends_on:
+            - broker
+            - db
+        env_file:
+            - .env
+        environment:
+            - BROKER_URL=redis://newsletter_broker:6379/0
+            - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
+        healthcheck:
+            interval: 20s
+            retries: 3
+            start_period: 10s
+            test: ["CMD", "curl", "-f", "http://0.0.0.0:8000/v1/health"]
+            timeout: 5s
+        image: newsletter_api:1.0
+        networks:
+            newsletter_net:
+                aliases:
+                    - newsletter_api
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./app/:/opt/api/app/
+            - ./utils/:/opt/api/utils/
+            - ./manage.py:/opt/api/manage.py
+            - ./Pipfile:/opt/api/Pipfile
+            - ./Pipfile.lock:/opt/api/Pipfile.lock
 
-  db:
-    container_name: newsletter_db
-    environment:
-      - PG_DATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_DB=newsletter
-      - POSTGRES_PASSWORD=iUFXkPr7_!nm98EY
-      - POSTGRES_USER=postgres
-    healthcheck:
-      interval: 20s
-      retries: 3
-      start_period: 10s
-      test:
-        [
-          "CMD-SHELL",
-          "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'",
-        ]
-      timeout: 5s
-    image: postgres:15
-    networks:
-      newsletter_net:
-        aliases:
-          - newsletter_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - newsletter_db:/var/lib/postgresql/data
+    db:
+        container_name: newsletter_db
+        environment:
+            - PG_DATA=/var/lib/postgresql/data/pgdata
+            - POSTGRES_DB=newsletter
+            - POSTGRES_PASSWORD=iUFXkPr7_!nm98EY
+            - POSTGRES_USER=postgres
+        healthcheck:
+            interval: 20s
+            retries: 3
+            start_period: 10s
+            test:
+                [
+                    "CMD-SHELL",
+                    "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'",
+                ]
+            timeout: 5s
+        image: postgres:15
+        networks:
+            newsletter_net:
+                aliases:
+                    - newsletter_db
+        ports:
+            - "5432:5432"
+        volumes:
+            - newsletter_db:/var/lib/postgresql/data
+
+    broker:
+        command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+        container_name: newsletter_broker
+        healthcheck:
+            interval: 20s
+            retries: 3
+            start_period: 10s
+            test: ["CMD", "redis-cli", "ping"]
+            timeout: 5s
+        image: redis:6.2
+        networks:
+            newsletter_net:
+                aliases:
+                    - newsletter_broker
+        ports:
+            - "6379:6379"
+        volumes:
+            - newsletter_broker:/data
 
 networks:
-  newsletter_net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.20.20.0/24
-    name: newsletter_net
+    newsletter_net:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 192.20.20.0/24
+        name: newsletter_net
 
 volumes:
-  newsletter_db:
-    name: newsletter_db
+    newsletter_db:
+        name: newsletter_db
+    newsletter_broker:
+        name: newsletter_broker
