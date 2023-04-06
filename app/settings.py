@@ -4,6 +4,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 
+from app.bulk import BULK_BLUEPRINT
 from app.contact import CONTACT_BLUEPRINT
 from app.health import HEALTH_BLUEPRINT
 from app.newsletter import NEWSLETTER_BLUEPRINT
@@ -39,6 +40,7 @@ app.config["MAIL_USE_TLS"] = os.environ.get("MAIL_USE_TLS") == "True"
 mail.init_app(app)
 
 # Register blueprints.
+app.register_blueprint(BULK_BLUEPRINT)
 app.register_blueprint(CONTACT_BLUEPRINT)
 app.register_blueprint(HEALTH_BLUEPRINT)
 app.register_blueprint(NEWSLETTER_BLUEPRINT)
