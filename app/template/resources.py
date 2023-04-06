@@ -42,7 +42,6 @@ class TemplateResource(Resource):
             template = Template(**serialized_data)
             template.save()
         except Exception as e:
-            print(e)
             return {
                 "message": "An error occurred during CREATE operation."
             }, 500
