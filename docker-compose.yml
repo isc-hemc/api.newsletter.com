@@ -10,7 +10,8 @@ services:
         env_file:
             - .env
         environment:
-            - BROKER_URL=redis://newsletter_broker:6379/0
+            - CELERY_BROKER_URL=redis://newsletter_broker:6379/0
+            - CELERY_RESULT_BACKEND_URL=redis://newsletter_broker:6379/1
             - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
         healthcheck:
             interval: 20s

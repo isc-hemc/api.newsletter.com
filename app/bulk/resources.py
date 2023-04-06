@@ -2,7 +2,7 @@
 import csv
 import io
 
-from flask import request
+from flask import Response, request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
@@ -88,7 +88,7 @@ class BulkResource(Resource):
         except Exception as e:
             pass
 
-        return self.schema.dump(bulk), 202
+        return Response(status=202)
 
 
 class BulkListResource(Resource):

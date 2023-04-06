@@ -1,13 +1,10 @@
 """Newsletter resources module."""
-from flask import request
-from flask_mail import Message
+from flask import Response, request
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 from sqlalchemy.exc import DataError
 
-from app.contact import Contact
-from app.template import Template
-from utils import mail
+from app.tasks import mailer
 
 from .models import Newsletter
 from .schemas import NewsletterSchema
@@ -75,43 +72,11 @@ class NewsletterSubmissionResource(Resource):
         if newsletter is None:
             return {"message": f"Newsletter with ID '{id}' not found."}, 404
 
-        # TODO: move the following code to an async task.
-        # TODO: find a way to make a cleaner solution for this algorithm.
+        params = request.args.to_dict()
 
-        try:
-            mail_body = ""
-            if newsletter.template_id is not None:
-                mail_body = Template.find_by_id(newsletter.template_id).content
+        mailer.apply_async(args=[id, params])
 
-            params = request.args.to_dict()
-            if params.get("email") is not None:
-                contacts = [params.get("email")]
-            elif params.get("bulk_id") is not None:
-                # TODO: add SELECT option to find_by_bulk_id method.
-                contacts = [
-                    x.email
-                    for x in Contact.find_by_bulk_id(params.get("bulk_id"))
-                ]
-            else:
-                # TODO: add SELECT option to find_all method.
-                contacts = [x.email for x in Contact.find_all()]
-
-            msg = Message(
-                newsletter.subject,
-                recipients=contacts,
-                html=mail_body,
-            )
-
-            if newsletter.attachment is not None:
-                msg.attach(
-                    "attachment.png", "image/png", newsletter.attachment
-                )
-
-            mail.send(msg)
-        except Exception as e:
-            return {"message": "Mail server: connection refused."}, 502
-
-        return {"message": "Newsletter sent!"}, 202
+        return Response(status=202)
 
 
 __all__ = ["NewsletterResource", "NewsletterSubmissionResource"]

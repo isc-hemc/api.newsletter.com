@@ -16,6 +16,12 @@ app = Flask(__name__)
 # Enable CORS support on all routes.
 CORS(app)
 
+# Celery settings.
+app.config["CELERY"] = {
+    "broker_url": os.environ.get("CELERY_BROKER_URL"),
+    "result_backend": os.environ.get("CELERY_RESULT_BACKEND_URL"),
+}
+
 # Database settings.
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

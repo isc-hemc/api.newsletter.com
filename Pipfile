@@ -31,6 +31,7 @@ black = "==22.3.0"
 python_version = "3.10"
 
 [scripts]
+tasks = "celery -A manage.celery_app worker"
 dev = "flask run -h 0.0.0.0 -p 8000"
 db_init = "flask db init"
 makemigrations = "flask db migrate"
