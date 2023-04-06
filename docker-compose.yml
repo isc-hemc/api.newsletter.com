@@ -79,6 +79,31 @@ services:
         volumes:
             - newsletter_broker:/data
 
+    tasks:
+        build: .
+        command: ["pipenv", "run", "tasks"]
+        container_name: newsletter_tasks
+        depends_on:
+            - broker
+            - db
+        env_file:
+            - .env
+        environment:
+            - CELERY_BROKER_URL=redis://newsletter_broker:6379/0
+            - CELERY_RESULT_BACKEND_URL=redis://newsletter_broker:6379/1
+            - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
+        healthcheck:
+            interval: 20s
+            retries: 3
+            start_period: 10s
+            test: ["CMD", "pipenv", "run", "celery", "inspect", "ping"]
+            timeout: 5s
+        image: newsletter_tasks:1.0
+        networks:
+            newsletter_net:
+                aliases:
+                    - newsletter_tasks
+
 networks:
     newsletter_net:
         driver: bridge
