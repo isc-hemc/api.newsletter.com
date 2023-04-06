@@ -7,6 +7,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from app.contact import Contact
+from app.subscription import Subscription
 from utils import db
 
 from .models import Bulk
@@ -70,6 +71,9 @@ class BulkResource(Resource):
                     email=email,
                     bulk_id=bulk.id,
                 )
+                subscriptions = Subscription.find_all()
+                for sub in subscriptions:
+                    contact.contacts_subscriptions.append(sub)
                 contact.save()
             except:
                 db.session.rollback()
