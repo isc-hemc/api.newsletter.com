@@ -75,14 +75,30 @@ class NewsletterSubmissionResource(Resource):
         if newsletter is None:
             return {"message": f"Newsletter with ID '{id}' not found."}, 404
 
+        # TODO: move the following code to an async task.
+        # TODO: find a way to make a cleaner solution for this algorithm.
+
         try:
             mail_body = ""
             if newsletter.template_id is not None:
                 mail_body = Template.find_by_id(newsletter.template_id).content
 
+            params = request.args.to_dict()
+            if params.get("email") is not None:
+                contacts = [params.get("email")]
+            elif params.get("bulk_id") is not None:
+                # TODO: add SELECT option to find_by_bulk_id method.
+                contacts = [
+                    x.email
+                    for x in Contact.find_by_bulk_id(params.get("bulk_id"))
+                ]
+            else:
+                # TODO: add SELECT option to find_all method.
+                contacts = [x.email for x in Contact.find_all()]
+
             msg = Message(
                 newsletter.subject,
-                recipients=[x.email for x in Contact.find_all()],
+                recipients=contacts,
                 html=mail_body,
             )
 
@@ -92,7 +108,7 @@ class NewsletterSubmissionResource(Resource):
                 )
 
             mail.send(msg)
-        except:
+        except Exception as e:
             return {"message": "Mail server: connection refused."}, 502
 
         return {"message": "Newsletter sent!"}, 202
