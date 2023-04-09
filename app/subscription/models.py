@@ -29,5 +29,10 @@ class Subscription(db.Model, BaseModel):
     )
     is_active = Column(Boolean, default=True, nullable=False)
 
+    def save(self):
+        """Create a new resource."""
+        db.session.add(self)
+        db.session.commit()
+
 
 __all__ = ["Subscription"]

@@ -3,6 +3,9 @@ from flask import request
 from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 
+from app.newsletter_type import NewsletterType
+from app.subscription import Subscription
+
 from .models import Contact
 from .schemas import ContactSchema
 
@@ -41,6 +44,15 @@ class ContactResource(Resource):
         try:
             contact = Contact(**serialized_data)
             contact.save()
+
+            newsletter_types = NewsletterType.find_all()
+            for newsletter_type in newsletter_types:
+                subscription = Subscription(
+                    contact_id=contact.id,
+                    newsletter_type_id=newsletter_type.id,
+                    is_active=True,
+                )
+                subscription.save()
         except:
             return {
                 "message": "An error occurred during CREATE operation."
