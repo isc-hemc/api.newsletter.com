@@ -6,7 +6,7 @@ on:
             - "*"
 
 jobs:
-    develop:
+    deploy:
         environment:
             name: prod
         runs-on: ubuntu-latest
