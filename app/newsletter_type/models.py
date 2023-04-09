@@ -3,6 +3,8 @@ from typing import List
 
 from sqlalchemy import Column, String, Text
 
+from app.newsletter import Newsletter
+from app.subscription import Subscription
 from utils import BaseModel, db
 
 
@@ -28,6 +30,9 @@ class NewsletterType(db.Model, BaseModel):
 
     newsletters = db.relationship(
         "Newsletter", backref="newsletter_type", lazy=True
+    )
+    subscriptions = db.relationship(
+        "Subscription", backref="newsletter_type", lazy=True
     )
 
     @classmethod

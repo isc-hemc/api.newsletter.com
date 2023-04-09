@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from sqlalchemy import Column, Integer, String
 
+from app.contact import Contact
 from utils import BaseModel, db
 
 

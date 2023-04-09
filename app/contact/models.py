@@ -3,8 +3,8 @@ from typing import List, Optional
 
 from sqlalchemy import Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import func
 
+from app.subscription import Subscription
 from utils import BaseModel, db
 
 
@@ -31,6 +31,10 @@ class Contact(db.Model, BaseModel):
     email = Column(String(120), nullable=False, unique=True)
 
     bulk_id = Column(UUID(as_uuid=True), ForeignKey("bulks.id"), nullable=True)
+
+    subscriptions = db.relationship(
+        "Subscription", backref="contact", lazy=True
+    )
 
     @classmethod
     def find_all(self) -> List["Contact"]:
