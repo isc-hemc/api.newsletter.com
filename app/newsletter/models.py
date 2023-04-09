@@ -18,6 +18,8 @@ class Newsletter(db.Model, BaseModel):
         Binary representation of a PDF or PNG file.
     template_id : Column
         Foreign key of a template registry, this field is optional.
+    newsletter_type_id : Column
+        Foreign key of a newsletter-type registry, this field is required.
 
     """
 
@@ -25,8 +27,12 @@ class Newsletter(db.Model, BaseModel):
 
     subject = Column(String(256), nullable=False)
     attachment = Column(LargeBinary, nullable=True)
+
     template_id = Column(
         UUID(as_uuid=True), ForeignKey("templates.id"), nullable=True
+    )
+    newsletter_type_id = Column(
+        UUID(as_uuid=True), ForeignKey("newsletter_type.id"), nullable=False
     )
 
     @classmethod
