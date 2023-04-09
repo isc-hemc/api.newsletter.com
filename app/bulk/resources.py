@@ -88,7 +88,7 @@ class BulkResource(Resource):
         except Exception as e:
             pass
 
-        return Response(status=202)
+        return self.schema.dump(bulk), 201
 
 
 class BulkListResource(Resource):
