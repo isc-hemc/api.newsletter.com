@@ -1,5 +1,12 @@
 # api.newsletter.com
 
+
+## Docker install
+
+```sh
+docker-compose up --build -d
+```
+
 ## Install
 
 ```sh
@@ -13,10 +20,4 @@ pipenv run migrate
 ```sh
 pipenv run dev
 pipenv run tasks
-```
-
-### Docker install
-
-```sh
-docker-compose up --build -d
 ```
