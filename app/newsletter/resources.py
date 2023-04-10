@@ -6,7 +6,7 @@ from sqlalchemy.exc import DataError
 
 from app.tasks import mailer
 
-from .models import Newsletter
+from .models import Attachment, Newsletter
 from .schemas import NewsletterSchema
 
 
@@ -35,12 +35,26 @@ class NewsletterResource(Resource):
         except ValidationError as e:
             return e.messages, 400
 
-        attachment = None
-        if request.files.get("attachment") is not None:
-            attachment = request.files.get("attachment").read()
+        attachment = request.files.get("attachment")
+        if attachment is not None:
+            try:
+                file = request.files.get("attachment")
+                attachment = Attachment(
+                    name=file.filename,
+                    mimetype=file.mimetype,
+                    file=file.read(),
+                )
+                attachment.save()
+            except Exception as e:
+                return {
+                    "message": "An error occurred during CREATE operation."
+                }, 500
 
         try:
-            newsletter = Newsletter(attachment=attachment, **serialized_data)
+            attachment_id = None if attachment is None else attachment.id
+            newsletter = Newsletter(
+                attachment_id=attachment_id, **serialized_data
+            )
             newsletter.save()
         except:
             return {

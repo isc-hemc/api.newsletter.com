@@ -3,7 +3,7 @@ from celery import shared_task
 from flask_mail import Message
 
 from app.contact import Contact
-from app.newsletter import Newsletter
+from app.newsletter import Attachment, Newsletter
 from app.subscription import Subscription
 from app.template import Template
 from utils import mail
@@ -57,9 +57,10 @@ def mailer(id: str, params: object):
                 html=mail_body.replace("{{id}}", str(x.id)),
             )
 
-            if newsletter.attachment is not None:
+            if newsletter.attachment_id is not None:
+                attachment = Attachment.find_by_id(newsletter.attachment_id)
                 msg.attach(
-                    "attachment.png", "image/png", newsletter.attachment
+                    attachment.name, attachment.mimetype, attachment.file
                 )
 
             mail.send(msg)

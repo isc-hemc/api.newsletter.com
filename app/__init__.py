@@ -1,5 +1,4 @@
 """App package initializer."""
-from .attachment import *
 from .bulk import *
 from .contact import *
 from .health import *
