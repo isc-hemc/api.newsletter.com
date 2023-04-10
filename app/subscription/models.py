@@ -34,5 +34,9 @@ class Subscription(db.Model, BaseModel):
         db.session.add(self)
         db.session.commit()
 
+    def update(self):
+        """Update the current resource."""
+        db.session.commit()
+
 
 __all__ = ["Subscription"]

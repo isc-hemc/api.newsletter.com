@@ -4,7 +4,7 @@ from flask_restful import Resource
 from marshmallow.exceptions import ValidationError
 
 from app.newsletter_type import NewsletterType
-from app.subscription import Subscription
+from app.subscription import Subscription, SubscriptionSchema
 
 from .models import Contact
 from .schemas import ContactSchema
@@ -87,4 +87,73 @@ class ContactListResource(Resource):
         return {"results": serialized_data}, 200
 
 
-__all__ = ["ContactResource", "ContactListResource"]
+class ContactSubscriptionResource(Resource):
+    """Manage subscriptions related to a contact.
+
+    Attributes
+    ----------
+    schema : SubscriptionSchema
+        Serialization schema object.
+
+    Methods
+    -------
+    patch()
+        Update an existing subscription registry.
+
+    """
+
+    schema = SubscriptionSchema()
+
+    def patch(self, **kwargs):
+        """Update an existing subscription registry."""
+        subscription = Subscription.query.get_or_404(kwargs["subscription_id"])
+
+        data = request.get_json()
+        try:
+            serialized_data = self.schema.load(data)
+        except ValidationError as e:
+            return e.messages, 400
+
+        try:
+            setattr(subscription, "is_active", serialized_data["is_active"])
+            subscription.update()
+        except Exception as e:
+            return {
+                "message": "An error occurred during PATCH operation."
+            }, 500
+
+        return self.schema.dump(subscription), 200
+
+
+class ContactSubscriptionListResource(Resource):
+    """Manage a list of subscriptions related to a contact.
+
+    Attributes
+    ----------
+    schema : SubscriptionSchema
+        Serialization schema object.
+
+    Methods
+    -------
+    get()
+        Retrive a list of subscriptions related to a contact.
+
+    """
+
+    schema = SubscriptionSchema(many=True)
+
+    def get(self, **kwargs):
+        """Retrive a list of subscriptions related to a contact."""
+        subscriptions = Subscription.query.filter_by(**kwargs)
+
+        serialized_data = self.schema.dump(subscriptions)
+
+        return {"results": serialized_data}, 200
+
+
+__all__ = [
+    "ContactResource",
+    "ContactListResource",
+    "ContactSubscriptionResource",
+    "ContactSubscriptionListResource",
+]
