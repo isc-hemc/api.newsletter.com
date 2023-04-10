@@ -8,6 +8,7 @@ from app.bulk import BULK_BLUEPRINT
 from app.contact import CONTACT_BLUEPRINT
 from app.health import HEALTH_BLUEPRINT
 from app.newsletter import NEWSLETTER_BLUEPRINT
+from app.newsletter_type import NEWSLETTER_TYPE_BLUEPRINT
 from app.template import TEMPLATE_BLUEPRINT
 from utils import db, ma, mail, migrate
 
@@ -50,6 +51,7 @@ app.register_blueprint(BULK_BLUEPRINT)
 app.register_blueprint(CONTACT_BLUEPRINT)
 app.register_blueprint(HEALTH_BLUEPRINT)
 app.register_blueprint(NEWSLETTER_BLUEPRINT)
+app.register_blueprint(NEWSLETTER_TYPE_BLUEPRINT)
 app.register_blueprint(TEMPLATE_BLUEPRINT)
 
 __all__ = ["app"]
