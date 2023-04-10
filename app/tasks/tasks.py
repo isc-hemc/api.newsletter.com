@@ -48,18 +48,21 @@ def mailer(id: str, params: object):
                 contact_id=x.id,
             ).first()
             if sub.is_active:
-                recipients.append(x.email)
+                recipients.append(x)
 
-        msg = Message(
-            newsletter.subject,
-            recipients=recipients,
-            html=mail_body,
-        )
+        for x in recipients:
+            msg = Message(
+                newsletter.subject,
+                recipients=[x.email],
+                html=mail_body.replace("{{id}}", str(x.id)),
+            )
 
-        if newsletter.attachment is not None:
-            msg.attach("attachment.png", "image/png", newsletter.attachment)
+            if newsletter.attachment is not None:
+                msg.attach(
+                    "attachment.png", "image/png", newsletter.attachment
+                )
 
-        mail.send(msg)
+            mail.send(msg)
     except Exception as e:
         print(e)
 
