@@ -80,10 +80,10 @@ services:
             - newsletter_broker:/data
 
     tasks:
-        build: .
         command: ["pipenv", "run", "tasks"]
         container_name: newsletter_tasks
         depends_on:
+            - api
             - broker
             - db
         env_file:
@@ -98,7 +98,7 @@ services:
             start_period: 10s
             test: ["CMD", "pipenv", "run", "celery", "inspect", "ping"]
             timeout: 5s
-        image: newsletter_tasks:1.0
+        image: newsletter_api:1.0
         networks:
             newsletter_net:
                 aliases:

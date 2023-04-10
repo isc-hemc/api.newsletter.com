@@ -4,6 +4,7 @@ from flask_mail import Message
 
 from app.contact import Contact
 from app.newsletter import Newsletter
+from app.subscription import Subscription
 from app.template import Template
 from utils import mail
 
@@ -33,15 +34,25 @@ def mailer(id: str, params: object):
         elif params.get("bulk_id") is not None:
             # TODO: add SELECT option to find_by_bulk_id method.
             contacts = [
-                x.email for x in Contact.find_by_bulk_id(params.get("bulk_id"))
+                x for x in Contact.find_by_bulk_id(params.get("bulk_id"))
             ]
         else:
             # TODO: add SELECT option to find_all method.
-            contacts = [x.email for x in Contact.find_all()]
+            contacts = [x for x in Contact.find_all()]
+
+        # TODO: perform this operation in SQL.
+        recipients = []
+        for x in contacts:
+            sub = Subscription.query.filter_by(
+                newsletter_type_id=newsletter.newsletter_type_id,
+                contact_id=x.id,
+            ).first()
+            if sub.is_active:
+                recipients.append(x.email)
 
         msg = Message(
             newsletter.subject,
-            recipients=contacts,
+            recipients=recipients,
             html=mail_body,
         )
 
