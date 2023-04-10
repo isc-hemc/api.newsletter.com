@@ -9,10 +9,15 @@ WORKDIR $HOME
 FROM python-base as builder
 
 COPY app ./app
+COPY migrations ./migrations
 COPY utils ./utils
-COPY manage.py Pipfile Pipfile.lock ./
+COPY manage.py Pipfile Pipfile.lock docker-entrypoint.sh ./
 
 RUN pip install pipenv
 RUN pipenv install
+
+RUN chmod +x docker-entrypoint.sh
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
 
 CMD [ "pipenv", "run", "dev" ]
