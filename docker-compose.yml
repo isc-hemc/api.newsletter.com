@@ -86,12 +86,16 @@ services:
             - api
             - broker
             - db
+            - smtp
         env_file:
             - .env
         environment:
             - CELERY_BROKER_URL=redis://newsletter_broker:6379/0
             - CELERY_RESULT_BACKEND_URL=redis://newsletter_broker:6379/1
             - DATABASE_URL=postgresql://postgres:iUFXkPr7_!nm98EY@newsletter_db:5432/newsletter
+            - MAIL_PORT=1025
+            - MAIL_SERVER=newsletter_smtp
+            - MAIL_USE_TLS=False
         healthcheck:
             interval: 20s
             retries: 3
@@ -103,6 +107,23 @@ services:
             newsletter_net:
                 aliases:
                     - newsletter_tasks
+
+    smtp:
+        container_name: newsletter_smtp
+        healthcheck:
+            interval: 20s
+            retries: 3
+            start_period: 10s
+            test: ["CMD", "echo | telnet 127.0.0.1 8025"]
+            timeout: 5s
+        image: mailhog/mailhog
+        networks:
+            newsletter_net:
+                aliases:
+                    - newsletter_smtp
+        ports:
+            - "1025:1025"
+            - "8025:8025"
 
 networks:
     newsletter_net:
