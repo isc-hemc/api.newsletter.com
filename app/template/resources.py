@@ -3,6 +3,8 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
+from utils import ListResource
+
 from .models import Template
 from .schemas import TemplateSchema
 
@@ -49,30 +51,11 @@ class TemplateResource(Resource):
         return self.schema.dump(template), 201
 
 
-class TemplateListResource(Resource):
-    """Manage a list of templates.
+class TemplateListResource(ListResource):
+    """Extends from `ListResource` and manage a list of templates."""
 
-    Attributes
-    ----------
-    schema : TemplateSchema
-        Serialization schema object.
-
-    Methods
-    -------
-    get()
-        Retrieve a list of serialized templates.
-
-    """
-
-    schema = TemplateSchema(many=True)
-
-    def get(self):
-        """Retrieve a list of serialized templates."""
-        templates = Template.find_all()
-
-        serialized_data = self.schema.dump(templates)
-
-        return {"results": serialized_data}, 200
+    model = Template
+    schema_class = TemplateSchema
 
 
 __all__ = ["TemplateResource", "TemplateListResource"]

@@ -5,6 +5,7 @@ from marshmallow.exceptions import ValidationError
 
 from app.newsletter_type import NewsletterType
 from app.subscription import Subscription, SubscriptionSchema
+from utils import ListResource
 
 from .models import Contact
 from .schemas import ContactSchema
@@ -61,30 +62,11 @@ class ContactResource(Resource):
         return self.schema.dump(contact), 201
 
 
-class ContactListResource(Resource):
-    """Manage a list of contacts.
+class ContactListResource(ListResource):
+    """Extends from `ListResource` and manage a list of contacts."""
 
-    Attributes
-    ----------
-    schema : ContactSchema
-        Serialization schema object.
-
-    Methods
-    -------
-    get()
-        Retrieve a list of serialized contacts.
-
-    """
-
-    schema = ContactSchema(many=True)
-
-    def get(self):
-        """Retrieve a list of serialized contacts."""
-        data = Contact.find_all()
-
-        serialized_data = self.schema.dump(data)
-
-        return {"results": serialized_data}, 200
+    model = Contact
+    schema_class = ContactSchema
 
 
 class ContactSubscriptionResource(Resource):

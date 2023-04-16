@@ -4,3 +4,4 @@ from .ma import *
 from .mail import *
 from .migrate import *
 from .models import *
+from .resources import *

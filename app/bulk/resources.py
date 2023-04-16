@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 from app.contact import Contact
 from app.newsletter_type import NewsletterType
 from app.subscription import Subscription
-from utils import db
+from utils import ListResource, db
 
 from .models import Bulk
 from .schemas import BulkSchema
@@ -98,30 +98,11 @@ class BulkResource(Resource):
         return self.schema.dump(bulk), 201
 
 
-class BulkListResource(Resource):
-    """Manage a list of bulk.
+class BulkListResource(ListResource):
+    """Extends from `ListResource` and manage a list of bulks."""
 
-    Attributes
-    ----------
-    schema : BulkSchema
-        Serialization schema object.
-
-    Methods
-    -------
-    get()
-        Retrieve a list of serialized bulks.
-
-    """
-
-    schema = BulkSchema(many=True)
-
-    def get(self):
-        """Retrieve a list of serialized bulks."""
-        data = Bulk.find_all()
-
-        serialized_data = self.schema.dump(data)
-
-        return {"results": serialized_data}, 200
+    model = Bulk
+    schema_class = BulkSchema
 
 
 __all__ = ["BulkResource", "BulkListResource"]
