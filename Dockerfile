@@ -1,4 +1,4 @@
-FROM python:3.12.0b1-slim as python-base
+FROM python:3.13.0a3-slim as python-base
 
 ENV HOME=/opt/api
 
